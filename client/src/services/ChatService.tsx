@@ -9,7 +9,7 @@ class ChatService {
                 getMessages {
                     id
                     content
-                    user
+                    username
                 }
             }
         `;

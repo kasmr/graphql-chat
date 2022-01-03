@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+
+import './assets/styles/index.css';
 import 'antd/dist/antd.css';
+
+import App from './App';
+
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+
 import { ConfigProvider } from 'antd';
 
 

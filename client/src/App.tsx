@@ -1,11 +1,14 @@
 import React from 'react';
+
 import { Chat } from './components/Chat';
+import { InputBar } from './components/InputBar';
 
 
 const App = () => {
     return (
         <>
-            <Chat/>
+            <Chat user="Alik"/>
+            <InputBar/>
         </>
     );
 };
