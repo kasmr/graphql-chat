@@ -6,7 +6,7 @@ const messages = [];
 const typeDefs = `
 type Message {
     id: ID!
-    user: String!
+    username: String!
     content: String!
 }
 
@@ -15,7 +15,7 @@ type Query {
 }
 
 type Mutation {
-    postMessage(user: String!, content: String!): ID!
+    postMessage(username: String!, content: String!): ID!
 }
 `;
 
@@ -24,11 +24,11 @@ const resolvers = {
         getMessages: () => messages,
     },
     Mutation: {
-        postMessage: (parent, { user, content }) => {
+        postMessage: (parent, { username, content }) => {
             const id = messages.length;
             messages.push({
                 id,
-                user,
+                username,
                 content,
             });
             return id;

@@ -1,6 +1,8 @@
 import React from 'react';
-import { Avatar, Tag, Typography } from 'antd';
+
 import { Messages } from './Chat';
+
+import { Avatar, Tag, Typography } from 'antd';
 
 
 interface Props {

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { ChatService } from '../services/ChatService';
 import { Divider } from 'antd';
 import { Message } from './Message';
 import { Loader } from './Loader';
 import { Error } from './Error';
+import { InputBar } from './InputBar';
 
 
 export interface Messages {
@@ -13,11 +14,10 @@ export interface Messages {
     content: string;
 }
 
-interface Props {
-    user: string;
-}
 
-const Chat = (props: Props) => {
+const Chat = () => {
+
+    const user = 'Alik'
 
     const { data, loading, error } = useQuery<{ getMessages: Messages[] }>(ChatService.getMessages);
 
@@ -28,10 +28,11 @@ const Chat = (props: Props) => {
     if (data && !loading) {
         return (
             <>
-                <Divider className='!mt-0 !py-5' orientation="center">Messages</Divider>
+                <Divider className="!mt-0 !py-5" orientation="center">Messages</Divider>
                 <div className="flex flex-col gap-3 h-full">
-                    <Message user={props.user} data={data}/>
+                    <Message user={user} data={data}/>
                 </div>
+                <InputBar user={user}/>
             </>
         );
     }
