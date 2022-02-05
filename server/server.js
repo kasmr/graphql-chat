@@ -1,4 +1,4 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { GraphQLServer, PubSub } from 'graphql-yoga';
 
 
 const messages = [];
@@ -11,32 +11,53 @@ type Message {
 }
 
 type Query {
-    getMessages: [Message!]
+    messages: [Message!]
 }
 
 type Mutation {
-    postMessage(username: String!, content: String!): ID!
+    sendMessage(username: String!, content: String!): ID!
+}
+
+type Subscription {
+    messages: [Message!]
 }
 `;
 
+const subscribers = [];
+
+const onMessage = (fn) => subscribers.push(fn);
+
 const resolvers = {
     Query: {
-        getMessages: () => messages,
+        messages: () => messages,
     },
     Mutation: {
-        postMessage: (parent, { username, content }) => {
+        sendMessage: (parent, { username, content }) => {
             const id = messages.length;
             messages.push({
                 id,
                 username,
                 content,
             });
+            subscribers.forEach(fn => fn());
             return id;
+        },
+    },
+    Subscription: {
+        messages: {
+            subscribe: (parent, args, { pubsub }) => {
+                const channel = Math.random().toString(36).slice(2, 15);
+                onMessage(() => pubsub.publish(channel, { messages }));
+                setTimeout(() => pubsub.publish(channel, { messages }), 0);
+                return pubsub.asyncIterator(channel);
+            },
         },
     },
 };
 
-const server = new GraphQLServer({ typeDefs, resolvers });
+const pubsub = new PubSub();
+
+const server = new GraphQLServer({ typeDefs, resolvers, context: { pubsub } });
 server.start(({ port }) => {
     console.log(`Server on http://localhost:${port}/`);
 });
