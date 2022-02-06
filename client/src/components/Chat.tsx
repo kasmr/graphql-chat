@@ -1,6 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 
 import { useSubscription } from '@apollo/client';
+
+import { Navigate } from 'react-router-dom';
 
 import { ChatService } from '../services/ChatService';
 
@@ -9,7 +11,6 @@ import { Avatar, Divider, Tag, Typography } from 'antd';
 import { InputBar } from './InputBar';
 import { Error } from './Error';
 import { Loader } from './Loader';
-import { UserModal } from './UserModal';
 
 
 interface Messages {
@@ -18,18 +19,25 @@ interface Messages {
     content: string;
 }
 
-const Chat = () => {
+interface Props {
+    user: string;
+}
 
-    const { data, loading, error } = useSubscription<{ messages: Messages[] }>(ChatService.getMessages)
+const Chat = (props: Props) => {
+
+    const { user } = props;
+
+    const { data, loading, error } = useSubscription<{ messages: Messages[] }>(ChatService.getMessages);
 
     useLayoutEffect(() => scrollToLastMessage(), [ data?.messages ]);
-
-    const [user, setUser] = useState('')
 
     const messageRef = useRef<HTMLDivElement>(null);
 
     const scrollToLastMessage = () => messageRef.current?.scrollIntoView({ behavior: 'smooth' });
 
+    if (!user) {
+        return <Navigate to="/" replace/>;
+    }
 
     if (error) {
         return <Error/>;
@@ -42,8 +50,6 @@ const Chat = () => {
     return (
         <main className="h-screen flex flex-col flex-1">
             <Divider className="!my-0 !pt-5" orientation="center">Messages</Divider>
-
-            <UserModal user={user} setUser={setUser} />
 
             <div className="flex flex-col mx-4 mt-4 mb-16 gap-3 overflow-auto">
                 {data?.messages.map(({ id, username, content }) => (
@@ -58,7 +64,7 @@ const Chat = () => {
                             {username}
                         </Avatar>
 
-                        <Tag className="!flex items-center" color="geekblue">
+                        <Tag className="!flex !m-0 items-center" color="geekblue">
                             <Typography.Text className="text-xl">
                                 {content}
                             </Typography.Text>
