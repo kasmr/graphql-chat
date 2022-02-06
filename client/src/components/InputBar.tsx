@@ -22,7 +22,12 @@ const InputBar = (props: Props) => {
         content: '',
     });
 
-    useEffect(() => setState({ ...state, user: props.user }), [ props.user ]);
+    const setToLocalStorage = () => localStorage.setItem('user', props.user);
+
+    useEffect(() => {
+        setState({ ...state, user: props.user });
+        setToLocalStorage();
+    }, [ props.user ]);
 
     const [ sendMessage ] = useMutation(ChatService.sendMessage);
 

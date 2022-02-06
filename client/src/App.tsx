@@ -10,11 +10,16 @@ const App = () => {
 
     const [ user, setUser ] = useState('');
 
+    const leaveChat = () => {
+        localStorage.removeItem('user');
+        setUser('');
+    };
+
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<UserModal user={user} setUser={setUser}/>}/>
-                <Route path="/chat" element={<Chat user={user}/>}/>
+                <Route path="/chat" element={<Chat user={user} leaveChat={leaveChat}/>}/>
             </Routes>
         </BrowserRouter>
     );

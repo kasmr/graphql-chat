@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +17,16 @@ const UserModal = (props: Props) => {
 
     const [ isOpen, setIsOpen ] = useState(true);
     const navigateTo = useNavigate();
+
+    const getUser = () => setUser(localStorage.getItem('user') as string);
+
+    useEffect(() => {
+        const localStorageUser = localStorage.getItem('user');
+        if (localStorageUser) {
+            getUser();
+            navigateTo('/chat');
+        }
+    }, []);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setUser(event.target.value);
 

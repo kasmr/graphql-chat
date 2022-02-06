@@ -6,7 +6,7 @@ import { Navigate } from 'react-router-dom';
 
 import { ChatService } from '../services/ChatService';
 
-import { Avatar, Divider, Tag, Typography } from 'antd';
+import { Avatar, Button, Divider, Tag, Typography } from 'antd';
 
 import { InputBar } from './InputBar';
 import { Error } from './Error';
@@ -21,11 +21,12 @@ interface Messages {
 
 interface Props {
     user: string;
+    leaveChat: Function;
 }
 
 const Chat = (props: Props) => {
 
-    const { user } = props;
+    const { user, leaveChat } = props;
 
     const { data, loading, error } = useSubscription<{ messages: Messages[] }>(ChatService.getMessages);
 
@@ -49,9 +50,19 @@ const Chat = (props: Props) => {
 
     return (
         <main className="h-screen flex flex-col flex-1">
-            <Divider className="!my-0 !pt-5" orientation="center">Messages</Divider>
+            <Divider className="!my-0 !pt-5 !text-2xl" orientation="center">Messages</Divider>
 
-            <div className="flex flex-col mx-4 mt-4 mb-16 gap-3 overflow-auto">
+            <Typography.Text className="text-2xl !absolute !left-[25px] !top-[10px]">
+                {user}
+            </Typography.Text>
+            <Button className="!absolute !right-[25px] !top-[10px]"
+                    onClick={() => leaveChat()}
+                    type="primary"
+                    danger>
+                Leave Chat
+            </Button>
+
+            <div className="flex flex-col px-4 mt-4 mb-16 gap-3 overflow-auto">
                 {data?.messages.map(({ id, username, content }) => (
                     <div key={id}
                          ref={messageRef}
